@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"name": "uaa(ABAP)",
+			"uri": "adt://uaa"
+		},
+		{
+			"name": "uaa(ABAP)",
+			"uri": "adt://uaa"
+		},
+		{
+			"path": "C:/SAP-Work/claude-abap"
+		}
+	],
+	"settings": {
+		"github.copilot.chat.virtualTools.threshold": 0
+	}
+}

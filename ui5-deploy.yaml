@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "4.0"
+metadata:
+  name: zprapp
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: https://87073b08-232b-42f9-ae7c-bc59cf2ae025.abap.us10.hana.ondemand.com
+          authenticationType: reentranceTicket # SAML support for vscode
+        app:
+          name: ZPRAPP
+          description: PR App
+          package: ZRS_PACK
+          transport: ""
+        exclude:
+          - /test/

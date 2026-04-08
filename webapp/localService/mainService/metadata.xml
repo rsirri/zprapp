@@ -133,6 +133,7 @@
                 <Property Name="BudgetCriticality" Type="Edm.Byte" Nullable="false"/>
                 <Property Name="Currency" Type="Edm.String" Nullable="false" MaxLength="5"/>
                 <Property Name="Priority" Type="Edm.Byte" Nullable="false"/>
+                <Property Name="HeaderNote" Type="Edm.String" Nullable="false" MaxLength="1024"/>
                 <Property Name="CreatedBy" Type="Edm.String" Nullable="false" MaxLength="12"/>
                 <Property Name="CreatedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="ChangedBy" Type="Edm.String" Nullable="false" MaxLength="12"/>
@@ -825,30 +826,6 @@
                         </PropertyValue>
                     </Record>
                 </Annotation>
-                <Annotation Term="SAP__UI.SelectionVariant" Qualifier="Rejected">
-                    <Record>
-                        <PropertyValue Property="Text" String="Rejected"/>
-                        <PropertyValue Property="FilterExpression" String="Structure ZC_PR_ITEM does not have components STATUS"/>
-                    </Record>
-                </Annotation>
-                <Annotation Term="SAP__UI.SelectionVariant" Qualifier="Approved">
-                    <Record>
-                        <PropertyValue Property="Text" String="Approved"/>
-                        <PropertyValue Property="FilterExpression" String="Structure ZC_PR_ITEM does not have components STATUS"/>
-                    </Record>
-                </Annotation>
-                <Annotation Term="SAP__UI.SelectionVariant" Qualifier="Submitted">
-                    <Record>
-                        <PropertyValue Property="Text" String="Submitted"/>
-                        <PropertyValue Property="FilterExpression" String="Structure ZC_PR_ITEM does not have components STATUS"/>
-                    </Record>
-                </Annotation>
-                <Annotation Term="SAP__UI.SelectionVariant" Qualifier="Draft">
-                    <Record>
-                        <PropertyValue Property="Text" String="My Drafts"/>
-                        <PropertyValue Property="FilterExpression" String="Structure ZC_PR_ITEM does not have components STATUS"/>
-                    </Record>
-                </Annotation>
                 <Annotation Term="Communication.Contact">
                     <Record>
                         <PropertyValue Property="tel">
@@ -1466,20 +1443,49 @@
                 </Annotation>
                 <Annotation Term="SAP__UI.Facets">
                     <Collection>
-                        <Record Type="SAP__UI.ReferenceFacet">
-                            <PropertyValue Property="Label" String="General Information"/>
-                            <PropertyValue Property="ID" String="GeneralInfoFacet"/>
-                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.FieldGroup#GeneralInfo"/>
+                        <Record Type="SAP__UI.CollectionFacet">
+                            <PropertyValue Property="Label" String="PR Details"/>
+                            <PropertyValue Property="ID" String="PRDetailTab"/>
+                            <PropertyValue Property="Facets">
+                                <Collection>
+                                    <Record Type="SAP__UI.ReferenceFacet">
+                                        <PropertyValue Property="Label" String="General Information"/>
+                                        <PropertyValue Property="ID" String="GeneralInfoFacet"/>
+                                        <PropertyValue Property="Target" AnnotationPath="@SAP__UI.FieldGroup#GeneralInfo"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
                         </Record>
                         <Record Type="SAP__UI.ReferenceFacet">
                             <PropertyValue Property="Label" String="Purchase Requisition Items"/>
                             <PropertyValue Property="ID" String="ItemsFacet"/>
                             <PropertyValue Property="Target" AnnotationPath="_Items/@SAP__UI.LineItem"/>
                         </Record>
-                        <Record Type="SAP__UI.ReferenceFacet">
-                            <PropertyValue Property="Label" String="Administrative Information"/>
-                            <PropertyValue Property="ID" String="AdminFacet"/>
-                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.FieldGroup#AdminInfo"/>
+                        <Record Type="SAP__UI.CollectionFacet">
+                            <PropertyValue Property="Label" String="Notes &amp; Justification"/>
+                            <PropertyValue Property="ID" String="NotesTab"/>
+                            <PropertyValue Property="Facets">
+                                <Collection>
+                                    <Record Type="SAP__UI.ReferenceFacet">
+                                        <PropertyValue Property="Label" String="Notes &amp; Justification"/>
+                                        <PropertyValue Property="ID" String="NotesFacet"/>
+                                        <PropertyValue Property="Target" AnnotationPath="@SAP__UI.FieldGroup#NotesInfo"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                        <Record Type="SAP__UI.CollectionFacet">
+                            <PropertyValue Property="Label" String="Administrative"/>
+                            <PropertyValue Property="ID" String="AdminTab"/>
+                            <PropertyValue Property="Facets">
+                                <Collection>
+                                    <Record Type="SAP__UI.ReferenceFacet">
+                                        <PropertyValue Property="Label" String="Administrative Information"/>
+                                        <PropertyValue Property="ID" String="AdminFacet"/>
+                                        <PropertyValue Property="Target" AnnotationPath="@SAP__UI.FieldGroup#AdminInfo"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
                         </Record>
                     </Collection>
                 </Annotation>
@@ -1567,14 +1573,17 @@
                                 <Record Type="SAP__UI.DataField">
                                     <PropertyValue Property="Label" String="Currency"/>
                                     <PropertyValue Property="Value" Path="Currency"/>
+                                    <Annotation Term="SAP__UI.PartOfPreview" Bool="false"/>
                                 </Record>
                                 <Record Type="SAP__UI.DataField">
                                     <PropertyValue Property="Label" String="Priority"/>
                                     <PropertyValue Property="Value" Path="Priority"/>
+                                    <Annotation Term="SAP__UI.PartOfPreview" Bool="false"/>
                                 </Record>
                                 <Record Type="SAP__UI.DataField">
                                     <PropertyValue Property="Label" String="Budget Value"/>
                                     <PropertyValue Property="Value" Path="BudgetTarget"/>
+                                    <Annotation Term="SAP__UI.PartOfPreview" Bool="false"/>
                                 </Record>
                             </Collection>
                         </PropertyValue>
@@ -1596,6 +1605,18 @@
                                 <Record Type="SAP__UI.DataField">
                                     <PropertyValue Property="Label" String="Total Value"/>
                                     <PropertyValue Property="Value" Path="TotalValue"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.FieldGroup" Qualifier="NotesInfo">
+                    <Record>
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Label" String="Justification / Notes"/>
+                                    <PropertyValue Property="Value" Path="HeaderNote"/>
                                 </Record>
                             </Collection>
                         </PropertyValue>
@@ -1665,6 +1686,9 @@
                         </Record>
                         <Record Type="SAP__UI.DataField">
                             <PropertyValue Property="Value" Path="Currency"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="HeaderNote"/>
                         </Record>
                     </Collection>
                 </Annotation>
@@ -1745,7 +1769,7 @@
                         </Record>
                     </Collection>
                 </Annotation>
-                <Annotation Term="SAP__UI.PresentationVariant">
+                <Annotation Term="SAP__UI.PresentationVariant" Qualifier="pVariant">
                     <Record>
                         <PropertyValue Property="MaxItems" Int="20"/>
                         <PropertyValue Property="SortOrder">
@@ -1754,6 +1778,11 @@
                                     <PropertyValue Property="Property" PropertyPath="PrDate"/>
                                     <PropertyValue Property="Descending" Bool="true"/>
                                 </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="GroupBy">
+                            <Collection>
+                                <PropertyPath>Status</PropertyPath>
                             </Collection>
                         </PropertyValue>
                         <PropertyValue Property="RequestAtLeast">
@@ -1787,6 +1816,130 @@
                         <PropertyPath>Department</PropertyPath>
                         <PropertyPath>Status</PropertyPath>
                     </Collection>
+                </Annotation>
+                <Annotation Term="SAP__UI.SelectionPresentationVariant">
+                    <Record>
+                        <PropertyValue Property="Text" String=""/>
+                        <PropertyValue Property="SelectionVariant" Path="@SAP__UI.SelectionVariant#DraftSubmitted"/>
+                        <PropertyValue Property="PresentationVariant" Path="@SAP__UI.PresentationVariant#pVariant"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.SelectionVariant" Qualifier="Rejected">
+                    <Record>
+                        <PropertyValue Property="Text" String="Rejected"/>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="SAP__UI.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="SAP__UI.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="SAP__UI.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="SAP__UI.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="R"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.SelectionVariant" Qualifier="Approved">
+                    <Record>
+                        <PropertyValue Property="Text" String="Approved"/>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="SAP__UI.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="SAP__UI.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="SAP__UI.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="SAP__UI.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="A"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.SelectionVariant" Qualifier="Submitted">
+                    <Record>
+                        <PropertyValue Property="Text" String="Submitted"/>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="SAP__UI.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="SAP__UI.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="SAP__UI.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="SAP__UI.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="S"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.SelectionVariant" Qualifier="Draft">
+                    <Record>
+                        <PropertyValue Property="Text" String="My Drafts"/>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="SAP__UI.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="SAP__UI.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="SAP__UI.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="SAP__UI.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="D"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.SelectionVariant" Qualifier="DraftSubmitted">
+                    <Record>
+                        <PropertyValue Property="Text" String="Active"/>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="SAP__UI.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="SAP__UI.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="SAP__UI.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="SAP__UI.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="D"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                                <Record Type="SAP__UI.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="SAP__UI.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="SAP__UI.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="SAP__UI.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="S"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
                 </Annotation>
                 <Annotation Term="SAP__common.Messages" Path="SAP__Messages"/>
             </Annotations>
@@ -2142,6 +2295,9 @@
             </Annotations>
             <Annotations Target="SAP__self.PurchaseRequisitionType/BudgetCriticality">
                 <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="SAP__self.PurchaseRequisitionType/HeaderNote">
+                <Annotation Term="SAP__UI.MultiLineText"/>
             </Annotations>
             <Annotations Target="SAP__self.PurchaseRequisitionItemType/EMailAddress">
                 <Annotation Term="Communication.IsEmailAddress"/>
